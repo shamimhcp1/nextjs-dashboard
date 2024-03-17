@@ -5,6 +5,8 @@ This repository is part of the Next.js App Router course, where we explore the m
 ## Live Demo
 [Check out the live demo here](https://nextjs-dashboard-git-main-shamim-hossains-projects-03448f0e.vercel.app/)
 
+![Screenshot 1 of nextjs-dashboard](./public/hero-desktop.png)
+
 ## Getting Started
 
 To get a local copy of this project up and running follow these steps.
