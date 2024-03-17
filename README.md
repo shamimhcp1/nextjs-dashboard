@@ -2,6 +2,9 @@
 
 This repository is part of the Next.js App Router course, where we explore the main features of Next.js by building a full-stack web application.
 
+## Live Demo
+[Check out the live demo here](https://nextjs-dashboard-git-main-shamim-hossains-projects-03448f0e.vercel.app/)
+
 ## Getting Started
 
 To get a local copy of this project up and running follow these steps.
