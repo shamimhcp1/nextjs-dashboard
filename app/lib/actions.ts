@@ -1,16 +1,39 @@
 'use server';
 
+import { z } from 'zod';
+import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+
+const FormSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  amount: z.coerce.number(),
+  status: z.enum(['pending', 'paid']),
+  date: z.string(),
+});
+
+const CreateInvoice = FormSchema.omit({ id: true, date: true });
+
 export async function createInvoice(formData: FormData) {
-  console.log('Creating invoice...', formData);
-    // If you're working with forms that have many fields, you may want to consider using the `FormData.entries()` method to convert the form data to a key/value object.
-    // const rawFormData = Object.fromEntries(formData.entries());
-    
-    // Alternatively, you can use the `FormData.get()` method to get the value of a specific field.
-    const rawFormData = {
-      customerId: formData.get('customerId'),
-      amount: formData.get('amount'),
-      status: formData.get('status'),
-    };
-    console.log('Raw form data:', rawFormData);
-    console.log(typeof rawFormData.amount);
+  // If you're working with forms that have many fields, you may want to consider using the `FormData.entries()` method to convert the form data to a key/value object.
+  // const rawFormData = Object.fromEntries(formData.entries());
+
+  // Alternatively, you can use the `FormData.get()` method to get the value of a specific field.
+  const { customerId, amount, status } = CreateInvoice.parse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+
+  const amountInCents = amount * 100;
+  const date = new Date().toISOString().split('T')[0];
+
+  await sql `
+    INSERT INTO invoices (customer_id, amount, status, date)
+    VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+  `;
+
+  revalidatePath('/dashboard/invoices');
+  redirect('/dashboard/invoices');
 }
